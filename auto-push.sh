@@ -1,5 +1,8 @@
 #!/bin/zsh
 
+# 添加 GitHub SSH 密钥到 SSH agent
+ssh-add -K ~/.ssh/id_rsa_github
+
 # 进入项目目录
 cd /Users/weixin.li/fontEnd_Learning/awesome-algorithms
 
