@@ -1,0 +1,41 @@
+name: Daily Commit
+
+on:
+  schedule:
+    # 每天 UTC 时间 0 点运行（北京时间 8 点）
+    - cron: '0 0 * * *'
+  workflow_dispatch: # 允许手动触发
+
+jobs:
+  commit:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        persist-credentials: false
+        fetch-depth: 0
+    
+    - name: Set up Git
+      run: |
+        git config --local user.email "weixin.li@nio.com"
+        git config --local user.name "weixin.li"
+    
+    - name: Make changes
+      run: |
+        # 这里添加你想要执行的代码
+        # 例如更新某个文件
+        echo "Last run: $(date)" >> last_run.txt
+    
+    - name: Commit and push
+      run: |
+        git add .
+        if ! git diff-index --quiet HEAD; then
+          git commit -m "Daily commit - $(date -u)"
+          git push https://$PERSONAL_TOKEN@github.com/$GITHUB_REPOSITORY.git
+        else
+          echo "No changes to commit"
+        fi
+      env:
+        PERSONAL_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
